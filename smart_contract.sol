@@ -36,7 +36,7 @@ Contract Music{
       codeCount += 1;
     }
     
-    functon buyCode() public payable{
+    function buyCode() public payable{
       // need to add show the music streaming code.
       // and delete the code from the list.
       // add discount, if the user buy the code several times, he get discount 50%
