@@ -4,11 +4,11 @@ Contract Music{
   // initial code is empty.
   uint256 public codeCount = 0
   
-  // owner can only modify the contract
+  
   address owner;
-    
+  //set modifier  
     modifier onlyOwner(){
-      require(msg.sender == owner);
+      require(msg.sender == owner, "Only the contract owner can call this function");
       _;
     }
     
