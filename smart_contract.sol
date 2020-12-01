@@ -1,6 +1,6 @@
 pragma solidity 0.5.1;
 
-Contract Music{
+contract Music{
   
   address payable wallet; 
   
@@ -10,21 +10,22 @@ Contract Music{
   constructor(address payable _wallet) public{
     wallet = _wallet;
    }
+    address owner;
   
-  address owner;
   //set modifier  
     modifier onlyOwner(){
       require(msg.sender == owner, "Only the contract owner can call this function");
       _;
+    }
+  
+    constructor() public {
+      owner = msg.sender;
     }
     
     struct Code{
       uint _code;
     }
     
-    constructor() public {
-      owner = msg.sender;
-    }
     
     function addCode(uint _code) public onlyOwner{
       //increase total number of the codes
