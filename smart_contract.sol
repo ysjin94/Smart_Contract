@@ -1,37 +1,56 @@
 pragma solidity 0.5.1;
 
-contract Music{
-  
-  address payable wallet; 
-  
-  // initial code is empty.
-  uint256 public codeCount = 0
-  
-  constructor(address payable _wallet) public{
-    wallet = _wallet;
-   }
-    address owner;
-  
-  //set modifier  
-    modifier onlyOwner(){
-      require(msg.sender == owner, "Only the contract owner can call this function");
-      _;
+contract owner{
+    address payable owner_wallet;
+    
+     constructor() public{
+        owner_wallet = msg.sender;
     }
-  
-    constructor() public {
-      owner = msg.sender;
+    
+    modifier onlyOwner{
+        require(msg.sender == owner_wallet, "Only owner can modify the function");
+        _;
+    }
+    
+}
+
+contract deconstrcut is owner{
+    function destory() public onlyOwner {
+        selfdestruct(owner_wallet);
+    }
+}
+
+contract Music is deconstrcut{
+    
+    uint256 public codeCount = 0;
+    mapping(uint256 => Code) public code;
+
+    constructor(address payable _wallet) public{
+        owner_wallet = _wallet;
     }
     
     struct Code{
       uint _code;
+      string _id;
+      uint _cost;
+      uint manufacture_date;
+     
     }
     
-    
-    function addCode(uint _code) public onlyOwner{
+    event OrderInfo(
+        string order_id,
+        address _buyer,
+        uint _code,
+        uint _cost,
+        uint manufacture_date
+    );
+     
+    function addCode(uint _code, string memory order_id, uint _cost ) public onlyOwner{
       //increase total number of the codes
-      incrememtCodeCount();
-      Code[codecount] = Code(_code);
+      incrementCodeCount();
+      code[codeCount] = Code(_code, order_id, _cost, block.timestamp);
     }
+    
     
     function incrementCodeCount() internal{
       codeCount += 1;
@@ -42,6 +61,9 @@ contract Music{
       // and delete the code from the list.
       // add discount, if the user buy the code several times, he get discount 50%
       // after that the stack will be reset.
-      wallet.transfer(msg.value);
+      owner_wallet.transfer(msg.value);
+      //emit OrderInfo( ,code[codeCount],msg.value, block.timestamp);
+        
     }
+ 
 }
