@@ -1,4 +1,4 @@
-pragma solidity 0.5.1;
+pragma solidity 0.5.16;
 
 
 contract Music {
@@ -6,10 +6,10 @@ contract Music {
     uint256 public codeCount = 0;
     mapping(uint256 => Code) public code;
 
-    address payable wallet;
+    address payable public wallet;
     
-    constructor(address payable _wallet) public{
-       wallet = _wallet;
+    constructor() public{
+       wallet = msg.sender;
     }
     
     //only owner can add more codes
