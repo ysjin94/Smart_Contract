@@ -2,7 +2,7 @@ pragma solidity 0.5.1;
 
 
 contract Music {
-    bool open = true;
+
     uint256 public codeCount = 0;
     mapping(uint256 => Code) public code;
 
@@ -34,7 +34,8 @@ contract Music {
         uint _cost,
         uint manufacture_date
     );
-
+    
+    //destory the contract
     function close() public onlyOwner{
         
         selfdestruct(wallet);
@@ -50,22 +51,28 @@ contract Music {
       
     }
     
-    
+    //increase total code count
     function incrementCodeCount() internal{
       codeCount += 1;
     }
-    
+
+    //decrease total code count
     function decrementCodeCount() internal{
       codeCount -= 1;
     }
     
+    
     function buyCode(string memory _order_id) public payable{
+        //check the code is sold out or not
         require(codeCount > 0, "It is sold out, please contact to Seller");
+
+        //chekc the buyer put right values
         require(msg.value == 1, "It is not correct value, please put right value");
 
+        //send it to seller
         wallet.transfer(msg.value);
         
-        //show the logs
+        //show the OrderInformation (logs)
         emit OrderInfo(_order_id, msg.sender, 1, block.timestamp); 
         
         //remove the code after selling
