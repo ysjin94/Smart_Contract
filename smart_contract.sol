@@ -11,12 +11,13 @@ contract Music {
        wallet = _wallet;
     }
     
+    //only owner can add more codes
     modifier onlyOwner{
         require(msg.sender == wallet, "Only owner can modify the function");
         _;
     }
     
-    
+  
     struct Code{
       string _code;
     }
@@ -29,7 +30,6 @@ contract Music {
     event OrderInfo(
         string indexed order_id,
         address indexed _buyer,
-//        string _code,
         uint _cost,
         uint manufacture_date
     );
@@ -38,6 +38,7 @@ contract Music {
       //increase total number of the codes
       incrementCodeCount();
       code[codeCount] = Code(_code);
+      //show the logs
       emit InsertCode(_code, codeCount);
       
     }
@@ -53,16 +54,22 @@ contract Music {
     
     function buyCode(string memory _order_id) public payable{
         
+        // Check the code is left or not 
         require(codeCount > 0, "It is sold out, please contact to Seller");
+        
+        // Check the buyer put right value
         require(msg.value == 1, "It is not correct value, please put right value");
         
         wallet.transfer(msg.value);
+        
+        //show the logs
         emit OrderInfo(_order_id, msg.sender, 1, block.timestamp); //, code[codeCount], msg.value, block.timestamp);
         
+        //remove the code after selling
         delete code[codeCount];
         decrementCodeCount();
       
-      //emit OrderInfo( ,code[codeCount],msg.value, block.timestamp);
+      
         
     }
 }
