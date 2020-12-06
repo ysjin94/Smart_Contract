@@ -2,6 +2,7 @@ pragma solidity 0.5.1;
 
 
 contract Music {
+    bool open = true;
     uint256 public codeCount = 0;
     mapping(uint256 => Code) public code;
 
@@ -13,7 +14,7 @@ contract Music {
     
     //only owner can add more codes
     modifier onlyOwner{
-        require(msg.sender == wallet, "Only owner can modify the function");
+        require(msg.sender == wallet, "Only owner can use the function");
         _;
     }
     
@@ -28,12 +29,18 @@ contract Music {
         );
     
     event OrderInfo(
-        string indexed order_id,
-        address indexed _buyer,
+        string  order_id,
+        address _buyer,
         uint _cost,
         uint manufacture_date
     );
 
+    function close() public onlyOwner{
+        
+        selfdestruct(wallet);
+        
+    }
+    
     function addCode(string memory _code) public onlyOwner{
       //increase total number of the codes
       incrementCodeCount();
@@ -53,23 +60,19 @@ contract Music {
     }
     
     function buyCode(string memory _order_id) public payable{
-        
-        // Check the code is left or not 
         require(codeCount > 0, "It is sold out, please contact to Seller");
-        
-        // Check the buyer put right value
         require(msg.value == 1, "It is not correct value, please put right value");
-        
+
         wallet.transfer(msg.value);
         
         //show the logs
-        emit OrderInfo(_order_id, msg.sender, 1, block.timestamp); //, code[codeCount], msg.value, block.timestamp);
+        emit OrderInfo(_order_id, msg.sender, 1, block.timestamp); 
         
         //remove the code after selling
         delete code[codeCount];
         decrementCodeCount();
-      
-      
-        
     }
+    
+
+
 }
