@@ -64,7 +64,7 @@ contract Music {
     
     function buyCode(string memory _order_id) public payable{
         require(codeCount > 0, "It is sold out, please contact to Seller");
-        require(msg.value == 1, "It is not correct value, please put right value");
+        require(msg.value == 1 ether, "It is not correct value, please put right value");
 
         wallet.transfer(msg.value);
         
