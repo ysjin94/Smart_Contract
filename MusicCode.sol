@@ -32,6 +32,7 @@ contract Music {
         string  order_id,
         address _buyer,
         uint _cost,
+        string _code,
         uint manufacture_date
     );
     
@@ -73,13 +74,16 @@ contract Music {
         wallet.transfer(msg.value);
         
         //show the OrderInformation (logs)
-        emit OrderInfo(_order_id, msg.sender, 1, block.timestamp); 
+        emit OrderInfo(_order_id, msg.sender, 1, getCode(),block.timestamp); 
         
         //remove the code after selling
         delete code[codeCount];
         decrementCodeCount();
     }
     
+    function getCode() internal returns(string memory bought_code) {
+        bought_code = code[codeCount]._code;
+    }
 
 
 }
