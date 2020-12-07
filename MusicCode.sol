@@ -69,7 +69,7 @@ contract Music {
         wallet.transfer(msg.value);
         
         //show the logs
-        getCode();
+       
         emit OrderInfo(_order_id, msg.sender, 1, getCode(), block.timestamp); 
         //remove the code after selling
         delete code[codeCount];
