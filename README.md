@@ -25,3 +25,5 @@ copy the whole MusicCode.sol to
 
 or use `truffle`
 * type `./node_modules/.bin/truffle test`
+
+### [Styling of Interface](https://solidity.readthedocs.io/en/v0.5.13/style-guide.html)
