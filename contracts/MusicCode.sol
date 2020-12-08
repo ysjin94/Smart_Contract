@@ -3,9 +3,10 @@ pragma solidity 0.5.16;
 
 contract Music {
     
-    uint256 public codeCount = 0;
-    mapping(uint256 => Code) public code;
-    
+    uint256 codeCount = 0;
+    uint256 NumberOfBuyer =0;
+    mapping(uint256 => Code) code;
+    mapping(uint256 => BuyInfo) buyer;
     address payable wallet;
     
     constructor() public{
@@ -22,6 +23,14 @@ contract Music {
     struct Code{
       string _code;
       uint manufacture_date;
+    }
+    
+    struct BuyInfo{
+        string _id;
+        string _code;
+        string _passcode;
+        uint manufacture_date;
+        
     }
     
 
@@ -62,15 +71,33 @@ contract Music {
       codeCount -= 1;
     }
     
-    function buyCode(string memory _order_id) public payable{
+    event test(
+        string _order_id,
+        string _cd,
+        uint date
+        
+    );
+    
+    function buyCode(string memory _order_id, string memory passcode) public payable{
         require(codeCount > 0, "It is sold out, please contact to Seller");
         require(msg.value == 1 ether, "It is not correct value, please put right value");
-
+        bytes memory passcodeChecker = bytes(passcode);
+        require(passcodeChecker.length != 0, "please put the passcode");
+        //check ID is exist or not.
+        for(uint i = 0; i <NumberOfBuyer; i++){
+            if( keccak256(abi.encodePacked(buyer[i]._id)) == keccak256(abi.encodePacked(_order_id)))
+                require(false, "The ID is already exist, please enter other ID");
+        }
+        
         wallet.transfer(msg.value);
         
-        //show the logs
+    
+       buyer[NumberOfBuyer] = BuyInfo(_order_id,getCode(), passcode, block.timestamp);
+       
+       NumberOfBuyer++;
+       
+       //show the logs
         emit OrderInfo(_order_id, msg.sender, 1, getCode(), block.timestamp); 
-        
         //remove the code after selling
         delete code[codeCount];
         decrementCodeCount();
@@ -79,6 +106,22 @@ contract Music {
     function getCode() internal returns(string memory bought_code) {
         bought_code = code[codeCount]._code;
     }
-
-
+    
+    function getCodeCount() public view returns(uint256){
+        return (codeCount);
+    }
+    
+    function viewCode(string memory _order_id, string memory passcode) public view returns(string memory) {
+        
+        bytes memory passcodeChecker = bytes(passcode);
+        require(passcodeChecker.length != 0, "please put the passcode");
+        
+        for(uint i = 0; i<NumberOfBuyer; i++ ){
+            if( keccak256(abi.encodePacked(buyer[i]._id)) == keccak256(abi.encodePacked(_order_id)) && 
+            keccak256(abi.encodePacked(buyer[i]._passcode)) == keccak256(abi.encodePacked(passcode)))
+              return buyer[i]._code;
+            
+        }
+        
+    }
 }
