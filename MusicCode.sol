@@ -3,9 +3,10 @@ pragma solidity 0.5.16;
 
 contract Music {
     
-    uint256 public codeCount = 0;
-    mapping(uint256 => Code) public code;
-    
+    uint256 codeCount = 0;
+    uint256 NumberOfBuyer =0;
+    mapping(uint256 => Code) code;
+    mapping(uint256 => BuyInfo) buyer;
     address payable wallet;
     
     constructor() public{
@@ -22,6 +23,13 @@ contract Music {
     struct Code{
       string _code;
       uint manufacture_date;
+    }
+    
+    struct BuyInfo{
+        string _id;
+        string _code;
+        uint manufacture_date;
+        
     }
     
 
@@ -62,14 +70,24 @@ contract Music {
       codeCount -= 1;
     }
     
+    event test(
+        string _order_id,
+        string _cd,
+        uint date
+        
+    );
+    
     function buyCode(string memory _order_id) public payable{
         require(codeCount > 0, "It is sold out, please contact to Seller");
         require(msg.value == 1 ether, "It is not correct value, please put right value");
 
         wallet.transfer(msg.value);
         
-        //show the logs
+       // add buyer
+       buyer[NumberOfBuyer] = BuyInfo(_order_id,getCode(),block.timestamp);
+       NumberOfBuyer++;
        
+       //show the logs
         emit OrderInfo(_order_id, msg.sender, 1, getCode(), block.timestamp); 
         //remove the code after selling
         delete code[codeCount];
@@ -79,6 +97,19 @@ contract Music {
     function getCode() internal returns(string memory bought_code) {
         bought_code = code[codeCount]._code;
     }
-
-
+    
+    // view the how many left the codes
+    function getCodeCount() public view returns(uint256){
+        return (codeCount);
+    }
+    
+    //buyer get the code
+    function viewCode(string memory _order_id) public view returns(string memory) {
+        for(uint i = 0; i<NumberOfBuyer; i++ ){
+            if( keccak256(abi.encodePacked(buyer[i]._id)) == keccak256(abi.encodePacked(_order_id)))
+              return buyer[i]._code;
+            
+        }
+        
+    }
 }
