@@ -48,9 +48,16 @@ contract Music {
     );
     
     function close() public onlyOwner{
-        
         selfdestruct(wallet);
-        
+
+    }
+    
+    function clear() public onlyOwner{
+        for(uint i = 0; i <NumberOfBuyer; i++){
+            if( buyer[i].manufacture_date + 30 days < block.timestamp)
+                delete buyer[i];
+                
+        }
     }
     
     function addCode(string memory _code) public onlyOwner{
@@ -71,7 +78,6 @@ contract Music {
       codeCount -= 1;
     }
     
-   
     
     function buyCode(string memory _order_id, string memory passcode) public payable{
         require(codeCount > 0, "It is sold out, please contact to Seller");
@@ -117,6 +123,8 @@ contract Music {
               return buyer[i]._code;
             
         }
+        
+        require(false, "we could not find your ID, it might be expired. please check the date you bought code. All ID will destory the date you bought after 30 days");
         
     }
 }
