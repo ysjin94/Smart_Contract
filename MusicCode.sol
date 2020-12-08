@@ -71,12 +71,6 @@ contract Music {
       codeCount -= 1;
     }
     
-    event test(
-        string _order_id,
-        string _cd,
-        uint date
-        
-    );
     
     function buyCode(string memory _order_id, string memory passcode) public payable{
         require(codeCount > 0, "It is sold out, please contact to Seller");
