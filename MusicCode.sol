@@ -80,6 +80,13 @@ contract Music {
     function buyCode(string memory _order_id) public payable{
         require(codeCount > 0, "It is sold out, please contact to Seller");
         require(msg.value == 1 ether, "It is not correct value, please put right value");
+        
+        //check ID is exist or not.
+        for(uint i = 0; i <NumberOfBuyer; i++){
+            if( keccak256(abi.encodePacked(buyer[i]._id)) == keccak256(abi.encodePacked(_order_id)))
+                require(false, "The ID is already exist, please enter other ID");
+        }
+        
 
         wallet.transfer(msg.value);
         
