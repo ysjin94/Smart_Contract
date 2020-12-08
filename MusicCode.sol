@@ -28,6 +28,7 @@ contract Music {
     struct BuyInfo{
         string _id;
         string _code;
+        string _passcode;
         uint manufacture_date;
         
     }
@@ -77,21 +78,22 @@ contract Music {
         
     );
     
-    function buyCode(string memory _order_id) public payable{
+    function buyCode(string memory _order_id, string memory passcode) public payable{
         require(codeCount > 0, "It is sold out, please contact to Seller");
         require(msg.value == 1 ether, "It is not correct value, please put right value");
-        
+        bytes memory passcodeChecker = bytes(passcode);
+        require(passcodeChecker.length != 0, "please put the passcode");
         //check ID is exist or not.
         for(uint i = 0; i <NumberOfBuyer; i++){
             if( keccak256(abi.encodePacked(buyer[i]._id)) == keccak256(abi.encodePacked(_order_id)))
                 require(false, "The ID is already exist, please enter other ID");
         }
         
-
         wallet.transfer(msg.value);
         
-       // add buyer
-       buyer[NumberOfBuyer] = BuyInfo(_order_id,getCode(),block.timestamp);
+    
+       buyer[NumberOfBuyer] = BuyInfo(_order_id,getCode(), passcode, block.timestamp);
+       
        NumberOfBuyer++;
        
        //show the logs
@@ -105,15 +107,18 @@ contract Music {
         bought_code = code[codeCount]._code;
     }
     
-    // view the how many left the codes
     function getCodeCount() public view returns(uint256){
         return (codeCount);
     }
     
-    //buyer get the code
-    function viewCode(string memory _order_id) public view returns(string memory) {
+    function viewCode(string memory _order_id, string memory passcode) public view returns(string memory) {
+        
+        bytes memory passcodeChecker = bytes(passcode);
+        require(passcodeChecker.length != 0, "please put the passcode");
+        
         for(uint i = 0; i<NumberOfBuyer; i++ ){
-            if( keccak256(abi.encodePacked(buyer[i]._id)) == keccak256(abi.encodePacked(_order_id)))
+            if( keccak256(abi.encodePacked(buyer[i]._id)) == keccak256(abi.encodePacked(_order_id)) && 
+            keccak256(abi.encodePacked(buyer[i]._passcode)) == keccak256(abi.encodePacked(passcode)))
               return buyer[i]._code;
             
         }
