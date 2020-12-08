@@ -1,12 +1,6 @@
 pragma solidity 0.5.16;
 
-
-contract Music {
-    
-    uint256 codeCount = 0;
-    uint256 NumberOfBuyer =0;
-    mapping(uint256 => Code) code;
-    mapping(uint256 => BuyInfo) buyer;
+contract owner {
     address payable wallet;
     
     constructor() public{
@@ -18,6 +12,25 @@ contract Music {
         require(msg.sender == wallet, "Only owner can use the function");
         _;
     }
+    function close() public;
+    function clear() public;
+    function addCode(string memory _code) public;
+    function incrementCodeCount() internal;
+    function decrementCodeCount() internal;
+    function buyCode(string memory _order_id, string memory passcode) public payable;
+    function getCode() internal returns(string memory bought_code);
+    function getCodeCount() public view returns(uint256);
+    function viewCode(string memory _order_id, string memory passcode) public view returns(string memory);
+}
+
+
+contract Music is owner{
+    
+    uint256 codeCount = 0;
+    uint256 NumberOfBuyer =0;
+    mapping(uint256 => Code) code;
+    mapping(uint256 => BuyInfo) buyer;
+
     
     
     struct Code{
