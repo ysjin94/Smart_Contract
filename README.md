@@ -11,6 +11,8 @@ Function buyCode(string memory _order_id, string memory passcode) => the buyer c
 
 Function close() => destroy the contract. the contract does not work after calling the function.
 
+Function clear() => clear Buyers, the day buyer bought after 30 days.
+
 Function getCode() => it is for show the logs(events)
 
 Function getCodeCount() => it shows that how many code is left.
