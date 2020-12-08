@@ -18,18 +18,18 @@ contract MusicCodeTest{
 	function testBuyCode() public {
 		Music music = new Music();
 		music.addCode("ThisIsTest2");
-		music.buyCode("User_ID");
+		music.buyCode("User_ID", "passcode");
 	}
 	
 	function testBuyCode_SoldOut() public {
 		Music music = new Music();
-		music.buyCode("User_ID");
+		music.buyCode("User_ID", "passcode");
 	}
 
 	function testBuyCode_WrongValue() public{
 		Music music = new Music();
 		music.addCode("ThisIsTest3");
-		music.buyCode("User_ID");
+		music.buyCode("User_ID", "passcode");
 	}
 	
 	function TestClose() public{
